@@ -85,27 +85,90 @@ class TweetManager:
 	
 	@staticmethod
 	def getJsonReponse(tweetCriteria, refreshCursor, cookieJar, proxy):
-		url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&src=typd&%smax_position=%s"
-		
+		url = "https://twitter.com/i/search/timeline?f=tweets&q=%s&%s&src=typd&max_position=%s"
 		urlGetData = ''
-		if hasattr(tweetCriteria, 'username'):
-			urlGetData += ' from:' + tweetCriteria.username
+		
+		if hasattr(tweetCriteria, 'querySearch'):
+			urlGetData += tweetCriteria.querySearch + ' '
+
+		if hasattr(tweetCriteria, 'exactSearch'):
+			urlGetData += '"' + tweetCriteria.exactSearch + '" '
+
+		if hasattr(tweetCriteria, 'anySearch'):
+			temp_list = tweetCriteria.anySearch.split()
+			if (len(temp_list) == 1):
+				urlGetData += temp_list[0] + ' '
+			else:
+				for w in temp_list:
+					urlGetData += w
+					if (w != temp_list[-1]):
+						urlGetData += ' OR '
+				urlGetData += ' '
+
+		if hasattr(tweetCriteria, 'excludeSearch'):
+			urlGetData += '-' + tweetCriteria.excludeSearch + ' '
+
+		if hasattr(tweetCriteria, 'hashtag'):
+				temp_list = tweetCriteria.hashtag.split()
+				if (len(temp_list) == 1):
+					urlGetData += '#' + temp_list[0] + ' '
+				else:
+					for h in temp_list:
+						urlGetData += '#' + h
+						if (h != temp_list[-1]):
+							urlGetData += ' OR '
+					urlGetData += ' '
+
+		if hasattr(tweetCriteria, 'author'):
+			temp_list = tweetCriteria.author.split()
+			if (len(temp_list) == 1):
+				urlGetData += 'from:' + temp_list[0] + ' '
+			else:
+				for usr in temp_list:
+					urlGetData += 'from:' + usr
+					if (usr != temp_list[-1]):
+						urlGetData += ' OR '
+				urlGetData += ' '
 			
+		if hasattr(tweetCriteria, 'recipient'):
+			temp_list = tweetCriteria.recipient.split()
+			if (len(temp_list) == 1):
+				urlGetData += 'to:' + temp_list[0] + ' '
+			else:
+				for usr in temp_list:
+					urlGetData += 'to:' + usr
+					if (usr != temp_list[-1]):
+						urlGetData += ' OR '
+				urlGetData += ' '
+
+		if hasattr(tweetCriteria, 'mention'):
+			temp_list = tweetCriteria.mention.split()
+			if (len(temp_list) == 1):
+				urlGetData += '@' + temp_list[0] + ' '
+			else:
+				for usr in temp_list:
+					urlGetData += '@' + usr
+					if (usr != temp_list[-1]):
+						urlGetData += ' OR '
+				urlGetData += ' '
+
+		if hasattr(tweetCriteria, 'location'):
+			urlGetData += 'near:"' + tweetCriteria.location + '" within:' + str(tweetCriteria.radius) + ' '
+
 		if hasattr(tweetCriteria, 'since'):
-			urlGetData += ' since:' + tweetCriteria.since
+			urlGetData += 'since:' + tweetCriteria.since + ' '
 			
 		if hasattr(tweetCriteria, 'until'):
-			urlGetData += ' until:' + tweetCriteria.until
-			
-		if hasattr(tweetCriteria, 'querySearch'):
-			urlGetData += ' ' + tweetCriteria.querySearch
+			urlGetData += 'until:' + tweetCriteria.until + ' '
 			
 		if hasattr(tweetCriteria, 'lang'):
-			urlLang = 'lang=' + tweetCriteria.lang + '&'
+			urlLang = 'lang=' + tweetCriteria.lang
 		else:
-			urlLang = ''
+			urlLang = 'lang=en'
+		
 		url = url % (urllib.parse.quote(urlGetData), urlLang, refreshCursor)
-		#print(url)
+		#print(tweetCriteria.exactSearch)
+		print("Try to see on browser: https://twitter.com/search?q=%s&src=typd" % urllib.parse.quote(urlGetData))
 
 		headers = [
 			('Host', "twitter.com"),
