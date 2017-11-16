@@ -153,7 +153,7 @@ class TweetManager:
 				urlGetData += ' '
 
 		if hasattr(tweetCriteria, 'location'):
-			urlGetData += 'near:"' + tweetCriteria.location + '" within:' + str(tweetCriteria.radius) + ' '
+			urlGetData += 'near:"' + tweetCriteria.location + '" within:' + str(tweetCriteria.radius) + 'mi '
 
 		if hasattr(tweetCriteria, 'since'):
 			urlGetData += 'since:' + tweetCriteria.since + ' '
