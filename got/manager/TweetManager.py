@@ -41,10 +41,7 @@ class TweetManager:
 				permalink = tweetPQ.attr("data-permalink-path");
 				user_id = int(tweetPQ("a.js-user-profile-link").attr("data-user-id"))
 				
-				geo = ''
-				geoSpan = tweetPQ('span.Tweet-geo')
-				if len(geoSpan) > 0:
-					geo = geoSpan.attr('title')
+				geo = TweetManager.findLocation(usernameTweet)
 				urls = []
 				for link in tweetPQ("a"):
 					try:
@@ -198,4 +195,39 @@ class TweetManager:
 		
 		dataJson = json.loads(jsonResponse.decode())
 		
-		return dataJson		
+		return dataJson	
+
+	@staticmethod
+	def findLocation(username):
+		url = "https://twitter.com/%s" % username
+
+		headers = [
+			('Host', "twitter.com"),
+			('User-Agent', "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"),
+			('Accept', "application/json, text/javascript, */*; q=0.01"),
+			('Accept-Language', "de,en-US;q=0.7,en;q=0.3"),
+			('X-Requested-With', "XMLHttpRequest"),
+			('Referer', url),
+			('Connection', "keep-alive")
+		]
+
+		opener = urllib.request.build_opener(
+			urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+		opener.addheaders = headers
+
+		try:
+			response = opener.open(url)
+			jsonResponse = response.read()
+		except:
+			print("Twitter weird response. Try to see on browser: https://twitter.com/%s" % username)
+			print("Unexpected error:", sys.exc_info()[0])
+			sys.exit()
+			return
+
+		"span.ProfileHeaderCard-locationText"
+
+		info = PyQuery(jsonResponse)
+
+		geo_location = info("span.ProfileHeaderCard-locationText").text()
+
+		return geo_location	
