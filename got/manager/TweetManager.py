@@ -3,15 +3,16 @@ from .. import models
 from pyquery import PyQuery
 
 class TweetManager:
-	
-	# Change if you do not want to get locations to make the program faster
-	get_geo = True
 
 	def __init__(self):
 		pass
 		
 	@staticmethod
 	def getTweets(tweetCriteria, receiveBuffer=None, bufferLength=100, proxy=None):
+		
+		# Change if you do not want to get locations to make the program faster
+		get_geo = True
+
 		refreshCursor = ''
 	
 		results = []
