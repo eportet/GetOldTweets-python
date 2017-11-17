@@ -227,8 +227,8 @@ class TweetManager:
 		except:
 			print("Twitter weird response. Try to see on browser: https://twitter.com/%s" % username)
 			print("Unexpected error:", sys.exc_info()[0])
-			sys.exit()
-			return
+			#sys.exit()
+			return ''
 
 		"span.ProfileHeaderCard-locationText"
 
