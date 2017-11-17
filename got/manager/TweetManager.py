@@ -4,6 +4,9 @@ from pyquery import PyQuery
 
 class TweetManager:
 	
+	# Change if you do not want to get locations to make the program faster
+	get_geo = True
+
 	def __init__(self):
 		pass
 		
@@ -41,7 +44,9 @@ class TweetManager:
 				permalink = tweetPQ.attr("data-permalink-path");
 				user_id = int(tweetPQ("a.js-user-profile-link").attr("data-user-id"))
 				
-				geo = TweetManager.findLocation(usernameTweet)
+				geo = ''
+				if (get_geo):
+					geo = TweetManager.findLocation(usernameTweet)
 				urls = []
 				for link in tweetPQ("a"):
 					try:
